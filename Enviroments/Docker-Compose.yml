@@ -24,22 +24,9 @@ services:
       - mongodb
     restart: always
 
-  userservice2:
-    build: ../UserService/UserServiceAPI
-    container_name: userservice2
-    ports:
-      - 8082:8080
-    environment:
-      MongoConnectionString: "mongodb://admin:1234@mongodb:27017"
-      DatabaseName: "UserDB"
-      CollectionName: "users"
-    depends_on:
-      - mongodb
-    restart: always
-
   authservice:
     build:
-      context: ../AuthService/AuthServiceAPI
+      context: ../AuthenticationService/AuthServiceAPI
     container_name: authservice-Haav
     ports:
       - 8083:8080
@@ -49,7 +36,6 @@ services:
       Issuer: "authServiceAPI"
     depends_on:
       - userservice1
-      - userservice2
     restart: always
 
   nginx:
@@ -61,9 +47,28 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
       - userservice1
-      - userservice2
       - authservice
     restart: always
+  
+  loki:
+    image: grafana/loki:latest
+    container_name: loki
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    restart: always
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    restart: always
+    depends_on:
+      - loki
 
 volumes:
   mongodb_data:
+  grafana_data:
