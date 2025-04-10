@@ -12,7 +12,7 @@ services:
     restart: always
 
   userservice1:
-    build: ../UserService/UserServiceAPI
+    image: sakariye1/user-service:latest
     container_name: userservice1
     ports:
       - 8081:8080
@@ -25,7 +25,7 @@ services:
     restart: always
 
   userservice2:
-    build: ../UserService/UserServiceAPI
+    image: sakariye1/user-service:latest
     container_name: userservice2
     ports:
       - 8082:8080
@@ -38,8 +38,7 @@ services:
     restart: always
 
   authservice:
-    build:
-      context: ../AuthService/AuthServiceAPI
+    image: jabir8210/authservice:latest
     container_name: authservice-Haav
     ports:
       - 8083:8080
