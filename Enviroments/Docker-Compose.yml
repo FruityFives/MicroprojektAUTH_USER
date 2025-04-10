@@ -24,19 +24,6 @@ services:
       - mongodb
     restart: always
 
-  userservice2:
-    image: sakariye1/user-service:1.0.1
-    container_name: userservice2
-    ports:
-      - 8082:8080
-    environment:
-      MongoConnectionString: "mongodb://admin:1234@mongodb:27017"
-      DatabaseName: "UserDB"
-      CollectionName: "users"
-    depends_on:
-      - mongodb
-    restart: always
-
   authservice:
     image: jabir8210/authservice:1.0.1
     container_name: authservice-Haav
@@ -48,7 +35,6 @@ services:
       Issuer: "authServiceAPI"
     depends_on:
       - userservice1
-      - userservice2
     restart: always
 
   nginx:
@@ -60,7 +46,6 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
       - userservice1
-      - userservice2
       - authservice
     restart: always
 
